@@ -1,0 +1,22 @@
+services:
+  server:
+    build:
+      context: .
+      target: dev
+    networks:
+      - reverse-proxy
+    environment:
+      NODE_ENV: production
+      SQLITE_DB_PATH: "./db/data.sqlite"
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./db:/usr/src/app/db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kvittoredovisning.rule=Host(`dev.kryddan.xyz`)"
+      - "traefik.http.routers.kvittoredovisning.entrypoints=websecure"
+      - "traefik.http.routers.kvittoredovisning.middlewares=auth@file"
+
+networks:
+  reverse-proxy:
+    external: true
